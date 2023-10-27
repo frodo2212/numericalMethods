@@ -2,6 +2,7 @@
 using namespace std;
 
 
+
 // printet mir halt nen array am pointer
 void printArray(float** arr, int N)
 {
@@ -12,7 +13,6 @@ void printArray(float** arr, int N)
 		cout << endl;
 	}
 }
-
 void printArray(float arr[5][5], int N)
 {
 	for (int i = 0; i < N; ++i) {
@@ -21,6 +21,13 @@ void printArray(float arr[5][5], int N)
 		}
 		cout << endl;
 	}
+}
+void printVector(float* arr, int N)
+{
+	for (int j = 0; j < N; ++j) {
+		cout << arr[j]<<" ";
+	}
+	cout << endl;
 }
 
 float* backward_substitution(float input[5][5], float vector[5], int N){
@@ -34,7 +41,6 @@ float* backward_substitution(float input[5][5], float vector[5], int N){
     }
     return out;
 }
-
 
 void GaussJordan_wo_pivot(float input[5][5], float vector[5], int N){
     for(int a=0; a < N-1; a++){
@@ -53,13 +59,17 @@ void GaussJordan_wo_pivot(float input[5][5], float vector[5], int N){
     }
 }
 
-int index_largest_abs(float vector[5]){
-    int index = 0;
+int index_largest_abs(float vector[5][5], int a){
+    int index = a;
     float max = 0;
-    for(int i=0;i<5;i++){
-        if(vector[i] < -max || vector[i]>max){
+    for(int i=a;i<5;i++){
+        if(vector[i][a] < -max){
             index = i;
-            max = vector[i];
+            max = -vector[i][a];
+        }
+        if(vector[i][a] > max){
+            index = i;
+            max = vector[i][a];
         }
     }
     return index;
@@ -67,8 +77,21 @@ int index_largest_abs(float vector[5]){
 
 void GaussJordan_w_pivot(float input[5][5], float vector[5], int N){
     for(int a=0; a < N-1; a++){
+        // pivoting
+        int maxindex = index_largest_abs(input, a);
+        cout<<"maxindex: "<<maxindex<<"\n";
+        float tmprow;
+        for(int l=0;l<N;l++){
+            tmprow = input[a][l];
+            input[a][l] = input[maxindex][l];
+            input[maxindex][l] = tmprow;
+        }
+        float tmpvec = vector[a];
+        vector[a] = vector[maxindex];
+        vector[maxindex] = tmpvec;
+        // GaussJordan
         float factor = input[a][a];
-        for(int i=0;i<=N-1; i++){
+        for(int i=0;i<=N-1; i++){ 
             input[a][i] = input[a][i] / factor;
         }
         vector[a] = vector[a] / factor;
@@ -82,6 +105,16 @@ void GaussJordan_w_pivot(float input[5][5], float vector[5], int N){
     }
 }
 
+float* matrix_vector_mult(float input[5][5], float vector[5]){
+    static float out[5] = {0,0,0,0,0};
+    for(int i=0;i<5;i++){
+        for(int j=0;j<5;j++){
+            out[i] += input[i][j]*vector[j];
+        }
+    }
+    return out;
+}
+
 
 int main(){
     //input Daten
@@ -90,19 +123,27 @@ int main(){
                                 -1, -1, -1, -1,-1,
                                 0, 0, 0, 7, 2,
                                 3, 4, -3, 4, 1};
-    float testmatrix[5][5] = {3, -1, 1, 4, 1,1, 1, 1, 3, 1,0, -1, -1, -1, -1,0, 0, 0, 7, 2,1, 4, -3, 4, 1};
-
     float b0[] = {1,-1,1,-1,1};
     float b1[] = {0,1,2,3,4};
     const int N = 5;
-    // rechnungen
-    printArray(testmatrix, N);
-    cout<<"\n\n";
-    GaussJordan_wo_pivot(testmatrix, b0, N);
-    printArray(testmatrix, N);
-    // float* output = backward_substitution(aufgabenmatrix, b0, N);
-    // das hier plottet den Output
-    //for(int i=0 ; i<5; i++)
-	//	cout<<output[i]<<"\t";
+    GaussJordan_w_pivot(aufgabenmatrix, b0, N);
+    printArray(aufgabenmatrix, N);
+    cout<<"\n";
+    float* output = backward_substitution(aufgabenmatrix, b0, N);
+    printVector(output, N);
+    cout<<"\n";
+    float aufgabenmatrix2[5][5] = {3, -1, 1, 4, 1, 1, 0, 1, 1, 1,-1, -1, -1, -1,-1,0, 0, 0, 7, 2,3, 4, -3, 4, 1};
+    float* testergebnis = matrix_vector_mult(aufgabenmatrix2, output);
+    printVector(testergebnis, N);
+    
 
+    // cout<<"press something to close";
+    // string hi = "ööö";
+    // while(1){
+    //     cin>>hi;
+    //     if(hi!="ööö"){
+    //         break;
+    //     }
+    // }
+    return 0;
 }
