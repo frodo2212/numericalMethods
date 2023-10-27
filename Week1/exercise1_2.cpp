@@ -19,7 +19,7 @@ double integral_r(int n, int decimals){
     if(n==0){
         return 1-round_to(cos(1), decimals);
     }else{
-        return 1-n*(n-1)*integral(n-2);
+        return 1-n*(n-1)*integral_r(n-2, decimals);
     }
 }
 
