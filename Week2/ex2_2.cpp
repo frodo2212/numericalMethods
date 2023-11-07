@@ -1,18 +1,6 @@
 #include <iostream>
 using namespace std;
 
-
-
-// printet mir halt nen array am pointer
-void printArray(float** arr, int N)
-{
-	for (int i = 0; i < N; ++i) {
-		for (int j = 0; j < N; ++j) {
-			cout << arr[i][j]<<" ";
-		}
-		cout << endl;
-	}
-}
 void printArray(float arr[5][5], int N)
 {
 	for (int i = 0; i < N; ++i) {
@@ -79,7 +67,7 @@ void GaussJordan_w_pivot(float input[5][5], float vector[5], int N){
     for(int a=0; a < N-1; a++){
         // pivoting
         int maxindex = index_largest_abs(input, a);
-        cout<<"maxindex: "<<maxindex<<"\n";
+        // cout<<"maxindex: "<<maxindex<<"\n";
         float tmprow;
         for(int l=0;l<N;l++){
             tmprow = input[a][l];
@@ -135,15 +123,6 @@ int main(){
     float aufgabenmatrix2[5][5] = {3, -1, 1, 4, 1, 1, 0, 1, 1, 1,-1, -1, -1, -1,-1,0, 0, 0, 7, 2,3, 4, -3, 4, 1};
     float* testergebnis = matrix_vector_mult(aufgabenmatrix2, output);
     printVector(testergebnis, N);
-    
-
-    // cout<<"press something to close";
-    // string hi = "ööö";
-    // while(1){
-    //     cin>>hi;
-    //     if(hi!="ööö"){
-    //         break;
-    //     }
-    // }
+    while(1){}
     return 0;
 }
