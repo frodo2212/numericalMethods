@@ -106,9 +106,9 @@ aufgabenmatrix*x1
 a_inverse = calculate_inverse(aufgabenmatrix)
 aufgabenmatrix*a_inverse
 
+
+
 include("../Matrixfunctions.jl")
-
-
 In = [1.1 1.7 1.3;1.3 1.9 2.3; 2.1 3.1 2.9]
 test = calculate_inverse(In)
 dx0 = test * [-0.004,-0.076,-0.088]

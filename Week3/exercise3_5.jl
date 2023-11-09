@@ -19,4 +19,9 @@ function do_all_the_work(matrix::Matrix, vectors::Vector{Vector{T}}) where T <: 
     return output
 end
 
-y = do_all_the_work(matrix, [b1,b2,b3])
+y1, y2, y3 = do_all_the_work(matrix, [b1,b2,b3])
+y3
+
+
+matrix*y1
+test = crout(matrix)

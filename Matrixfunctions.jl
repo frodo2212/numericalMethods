@@ -155,7 +155,7 @@ end
 #Für tridiag matrizen mit cyclic Randbedingungen
 function matrix_tridag_zerlegen(matrix::Matrix, gamma = 0)
     if gamma == 0
-        gamma = matrix[1,1]
+        gamma = -matrix[1,1]
     end
     rows, collumns = size(matrix)
     u = zeros(Float64, rows)
