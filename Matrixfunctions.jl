@@ -173,7 +173,7 @@ function matrix_tridag_zerlegen(matrix::Matrix, gamma = 0)
 end
 
 #TODO: besseren Namen überlegen
-function tridiag_x_calculation(input::Matrix, vector::Vector)
+function tridiag_x_calculation(input::Matrix, vector::Vector, onlyVector::Bool=true)
     rows, collumns = size(input)
     y = Vector{Float64}(undef, rows)
     x = Vector{Float64}(undef, rows)
@@ -190,6 +190,7 @@ function tridiag_x_calculation(input::Matrix, vector::Vector)
     for i in round.(Int64,collect(LinRange(rows-1,1, rows-1)))
         x[i] = (y[i]-(out[i,i+1]*x[i+1]))/out[i,i]
     end
+    onlyVector && (return x)
     return out, x
 end
 
@@ -225,4 +226,30 @@ function tridiag_invert(input::Matrix)#über GaußJordan
         error("something went wrong")
     end
     return out
+end
+
+
+function calculate_x(matrix::Matrix, vector::Vector)
+    tridiagmatrix, u, v = matrix_tridag_zerlegen(matrix, 1)
+    _,y = tridiag_x_calculation(tridiagmatrix, vector)
+    _,z = tridiag_x_calculation(tridiagmatrix, u)
+    x = y-(scalprod(v,y)/(1+scalprod(v,z)))*z
+    if !isapprox(matrix*x, vector)
+        error("solution not valid")
+    end
+    return x
+end
+
+function calculate_x_via_inversionmethod(matrix::Matrix, vector::Vector)
+    tridiagmatrix, u, v = matrix_tridag_zerlegen(matrix, 1)
+    inverse = tridiag_invert(tridiagmatrix)
+    z = inverse*u
+    w = inverse'*v
+    lambda = scalprod(v,z)
+    newinverse = inverse-(outprod(z,w))/(1+lambda)
+    x = newinverse*vector
+    if !isapprox(matrix*x, vector)
+        error("solution not valid")
+    end
+    return x
 end
